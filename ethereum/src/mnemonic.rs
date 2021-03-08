@@ -12,6 +12,7 @@ use bitvec::prelude::*;
 use hmac::Hmac;
 use pbkdf2::pbkdf2;
 use rand::Rng;
+use rand::thread_rng;
 use sha2::{Digest, Sha256, Sha512};
 use std::{fmt, marker::PhantomData, ops::Div, str, str::FromStr};
 
@@ -226,7 +227,8 @@ mod tests {
     use rand_xorshift::XorShiftRng;
 
     fn test_new_with_count<N: EthereumNetwork, W: EthereumWordlist>(word_count: u8) {
-        let rng = &mut XorShiftRng::seed_from_u64(1231275789u64);
+        //let rng = &mut XorShiftRng::seed_from_u64(1231275789u64);
+        let rng = &mut thread_rng();
         let mnemonic = EthereumMnemonic::<N, W>::new_with_count(rng, word_count).unwrap();
         test_from_phrase::<N, W>(&mnemonic.entropy, &mnemonic.to_phrase().unwrap());
     }
@@ -522,7 +524,8 @@ mod tests {
         #[test]
         #[should_panic(expected = "InvalidWordCount(11)")]
         fn new_invalid_word_count() {
-            let rng = &mut XorShiftRng::seed_from_u64(1231275789u64);
+            // let rng = &mut XorShiftRng::seed_from_u64(1231275789u64);
+            let rng = &mut thread_rng();
             let _mnemonic = EthereumMnemonic::<N, W>::new_with_count(rng, INVALID_WORD_COUNT).unwrap();
         }
 
